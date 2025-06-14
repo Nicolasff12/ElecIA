@@ -1,0 +1,6 @@
+flask
+python-dotenv
+google-generativeai
+requests
+beautifulsoup4
+psycopg2-binary

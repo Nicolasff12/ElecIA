@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agente IA: Recolección de Datos de Candidatos</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Agente de Recolección de Datos de Candidatos Presidenciales</h1>
+
+        <div class="form-section">
+            <form action="/iniciar_recoleccion" method="POST">
+                <label for="eleccion">Elección a investigar (Ej: "elecciones presidenciales Colombia 2026"):</label>
+                <input type="text" id="eleccion" name="eleccion" value="elecciones presidenciales Colombia 2026">
+                <button type="submit">Iniciar Recolección de Datos</button>
+            </form>
+        </div>
+
+        {% if message %}
+            <div class="status-message">
+                {{ message }}
+            </div>
+        {% endif %}
+
+        <div class="candidates-section">
+            <h2>Candidatos Recopilados</h2>
+            {% if candidatos %}
+                {% for candidate in candidatos %}
+                    <div class="candidate-card">
+                        <h3>{{ candidate.full_name or 'Nombre no disponible' }}</h3>
+                        <p><strong>Partido:</strong> {{ candidate.political_party or 'No disponible' }}</p>
+                        <p><strong>Fecha de Nacimiento:</strong> {{ candidate.birth_date or 'No disponible' }}</p>
+
+                        <p><strong>Educación:</strong>
+                            {% if candidate.education is iterable and not candidate.education is string %}
+                                <ul>
+                                    {% for item in candidate.education %}
+                                        <li>{{ item }}</li>
+                                    {% endfor %}
+                                </ul>
+                            {% else %}
+                                {{ candidate.education or 'No disponible' }}
+                            {% endif %}
+                        </p>
+
+                        <p><strong>Experiencia:</strong> {{ candidate.experience or 'No disponible' }}</p>
+
+                        {% if candidate.main_proposals and candidate.main_proposals != ['null'] %}
+                            <p><strong>Propuestas Principales:</strong></p>
+                            <ul>
+                                {% for proposal in candidate.main_proposals %}
+                                    <li>{{ proposal }}</li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <p><strong>Propuestas Principales:</strong> No disponibles</p>
+                        {% endif %}
+
+                        {% if candidate.source_url %}
+                            <a href="{{ candidate.source_url }}" target="_blank" class="source-link">Ver Fuente</a>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="no-data-message">
+                    No se han recopilado datos de candidatos aún. Haz clic en "Iniciar Recolección de Datos" para comenzar.
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="analysis-section">
+        <h2>Análisis IA de los Candidatos</h2>
+    
+        {% if analysis %}
+            <div class="analysis-content">
+                {{ analysis.replace('\n', '<br>') | safe }}
+            </div>
+        {% else %}
+            <p>No se ha generado un análisis aún.</p>
+    {% endif %}
+</div>
+
+</body>
+</html>
