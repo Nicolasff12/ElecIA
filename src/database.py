@@ -14,7 +14,7 @@ def get_db_connection():
             password=DB_PASSWORD,
             host=DB_HOST,
             port=DB_PORT,
-            sslmode='require'
+            sslmode='prefer'
         )
         logger.info("DATABASE: Conexión a la base de datos establecida.")
         return conn
