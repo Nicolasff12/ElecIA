@@ -3,6 +3,9 @@ from psycopg2 import Error
 from psycopg2.extras import Json
 from src.config import DB_NAME, DB_USER, DB_PASSWORD, DB_HOST, DB_PORT, logger
 import json
+import os
+
+ssl_mode = 'require' if os.getenv('USE_SSL_DB', 'false').lower() == 'true' else 'disable'
 
 def get_db_connection():
     """Establece y retorna una conexión a la base de datos PostgreSQL."""
@@ -14,7 +17,7 @@ def get_db_connection():
             password=DB_PASSWORD,
             host=DB_HOST,
             port=DB_PORT,
-            sslmode='prefer'
+            sslmode=ssl_mode
         )
         logger.info("DATABASE: Conexión a la base de datos establecida.")
         return conn
