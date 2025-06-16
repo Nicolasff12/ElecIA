@@ -25,7 +25,7 @@ def generate_candidates_analysis(candidates_info):
     prompt += "\n".join(candidate_summaries)
 
     try:
-        model = genai.GenerativeModel('gemini-2.0-flash')
+        model = genai.GenerativeModel('gemini-1.5-flash')
         response = model.generate_content(prompt)
         analysis_text = response.text.strip()
         logger.info("ANALYSIS: Análisis generado correctamente.")

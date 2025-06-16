@@ -7,7 +7,7 @@ from src.config import logger # Importar logger
 # se haga en app.py al iniciar la aplicación, ya que es global.
 
 # Modelo de Gemini a usar (configurado en config.py si quieres que sea una variable)
-GEMINI_MODEL = 'models/gemini-2.0-flash'
+GEMINI_MODEL = 'models/gemini-1.5-flash'
 
 def call_gemini_api(prompt_parts: list):
     """
@@ -102,3 +102,37 @@ def enrich_specific_field(candidate_name: str, page_text: str, field: str):
             logger.error(f"LLM_PROCESSOR_ERROR: Gemini no devolvió JSON válido para enriquecimiento de '{field}': {e}. Raw: {json_str[:200]}...")
             return None
     return None
+
+def generate_ai_analysis(candidates: list) -> str:
+    """
+    Genera un análisis general de los candidatos usando el modelo de IA.
+    """
+    if not candidates:
+        return "No hay datos suficientes de candidatos para generar un análisis."
+
+    # Construimos el prompt
+    resumen_candidatos = []
+    for c in candidates:
+        resumen_candidatos.append(
+            f"Nombre: {c.get('full_name', 'N/A')}\n"
+            f"Partido: {c.get('political_party', 'N/A')}\n"
+            f"Propuestas principales: {', '.join(c.get('main_proposals', [])) if c.get('main_proposals') else 'N/A'}\n"
+        )
+    prompt = (
+        "Analiza los siguientes candidatos a la presidencia de Colombia. "
+        "Identifica sus diferencias principales, los enfoques de sus propuestas y posibles riesgos u oportunidades. "
+        "Sé claro y neutral. Lista puntos clave.\n\n"
+        + "\n".join(resumen_candidatos)
+    )
+
+    try:
+        logger.info("ANALYSIS: Solicitando análisis al modelo de IA.")
+        model = genai.GenerativeModel('gemini-1.5-pro')  # Asegúrate de usar un modelo válido
+        response = model.generate_content(prompt)
+        analysis_text = response.text.strip() if response.text else "No se recibió texto del modelo."
+        logger.info("ANALYSIS: Análisis generado exitosamente.")
+        return analysis_text
+
+    except Exception as e:
+        logger.error(f"ANALYSIS: Error al generar análisis: {e}")
+        return "Ocurrió un error al generar el análisis con IA."

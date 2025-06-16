@@ -72,17 +72,14 @@
         </div>
     </div>
 
-    <div class="analysis-section">
-        <h2>Análisis IA de los Candidatos</h2>
-    
-        {% if analysis %}
-            <div class="analysis-content">
-                {{ analysis.replace('\n', '<br>') | safe }}
-            </div>
+   <div class="analysis-container" style="margin-top: 20px; padding: 15px; background-color: #f9f9f9; border-radius: 8px;">
+        <h3 style="color: #2c3e50;">Análisis IA de los Candidatos</h3>
+        {% if ia_analysis %}
+            <div style="white-space: pre-wrap; color: #34495e;">{{ ia_analysis }}</div>
         {% else %}
-            <p>No se ha generado un análisis aún.</p>
-    {% endif %}
-</div>
+            <p style="color: #7f8c8d;">No se ha generado un análisis aún.</p>
+        {% endif %}
+    </div>
 
 </body>
 </html>
