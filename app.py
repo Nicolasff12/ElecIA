@@ -74,6 +74,9 @@ def iniciar_recoleccion():
     )
 
 
+
+import os
+
 if __name__ == '__main__':
     # Inicializar la base de datos al iniciar la aplicación
     init_db() 
@@ -81,4 +84,5 @@ if __name__ == '__main__':
     for msg in INITIAL_MESSAGES:
         logger.info(msg)
     
-    app.run(debug=True)
+    port = int(os.environ.get('PORT', 5000))  # Render asigna el puerto dinámicamente
+    app.run(host='0.0.0.0', port=port, debug=False)  # ¡Escucha en todas las interfaces!
